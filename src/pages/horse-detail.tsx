@@ -81,7 +81,7 @@ function HorseImage({
             ref={fileRef}
             type="file"
             accept="image/jpeg,image/png,image/webp,image/gif"
-            className="hidden"
+            className="sr-only"
             onChange={(e) => {
               const f = e.target.files?.[0]
               if (f) onFileSelect(f)
