@@ -25,7 +25,8 @@ interface AuthContextValue {
   logout: () => Promise<void>
 }
 
-const AuthContext = createContext<AuthContextValue | null>(null)
+// eslint-disable-next-line react-refresh/only-export-components
+export const AuthContext = createContext<AuthContextValue | null>(null)
 
 function saveTokens(access: string, refresh: string) {
   setAccessToken(access)

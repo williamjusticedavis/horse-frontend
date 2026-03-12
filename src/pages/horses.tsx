@@ -1,18 +1,11 @@
 import { useMemo, useState } from 'react'
-import { Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Spinner } from '@/components/ui/spinner'
 import { api } from '@/lib/api'
-import {
-  categoryVariant,
-  categoryLabel,
-  categoryOrder,
-  type Horse,
-  type TagCategory,
-} from '@/data/horses'
+import { categoryVariant, categoryLabel, categoryOrder, type Horse, type TagCategory } from '@/data/horses'
+import { HorseCard } from '@/components/horse/card'
 
 function buildFilterOptions(horses: Horse[]) {
   const map = new Map<TagCategory, Set<string>>()
@@ -125,32 +118,7 @@ export function HorsesPage() {
           {/* Grid */}
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {filteredHorses.map((horse) => (
-              <Link
-                key={horse.id}
-                to="/horse/$id"
-                params={{ id: String(horse.id) }}
-                className="block"
-              >
-                <Card className="h-full overflow-hidden transition-shadow hover:shadow-md">
-                  <div className="bg-muted flex h-48 items-center justify-center">
-                    <span className="text-6xl">{horse.imageEmoji ?? '🐴'}</span>
-                  </div>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-xl">{horse.name}</CardTitle>
-                    <p className="text-muted-foreground text-sm">גיל: {horse.age}</p>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <p className="text-muted-foreground text-sm">{horse.description}</p>
-                    <div className="flex flex-wrap gap-1">
-                      {horse.tags.map((tag) => (
-                        <Badge key={tag.id} variant={categoryVariant[tag.category]}>
-                          {tag.label}
-                        </Badge>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
+              <HorseCard key={horse.id} horse={horse} />
             ))}
           </div>
 
