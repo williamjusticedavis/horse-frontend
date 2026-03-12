@@ -18,6 +18,7 @@ export interface Horse {
   breed: string | null
   color: string | null
   imageEmoji: string | null
+  imageUrl: string | null
   tags: HorseTag[]
 }
 
