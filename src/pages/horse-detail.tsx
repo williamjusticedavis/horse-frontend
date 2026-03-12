@@ -65,8 +65,10 @@ export function HorseDetailPage() {
   const isDirty = isEditing && form !== null
 
   useBlocker({
-    blockerFn: () => window.confirm('יש שינויים שלא נשמרו. לצאת בכל זאת?'),
-    condition: isDirty,
+    shouldBlockFn: () => {
+      if (!isDirty) return false
+      return window.confirm('יש שינויים שלא נשמרו. לצאת בכל זאת?')
+    },
   })
 
   useEffect(() => {
@@ -103,7 +105,10 @@ export function HorseDetailPage() {
       if (!prev) return prev
       const exists = prev.tags.find((t) => t.category === category && t.label === label)
       if (exists) {
-        return { ...prev, tags: prev.tags.filter((t) => !(t.category === category && t.label === label)) }
+        return {
+          ...prev,
+          tags: prev.tags.filter((t) => !(t.category === category && t.label === label)),
+        }
       }
       return { ...prev, tags: [...prev.tags, { category, label, note: '' }] }
     })
@@ -114,7 +119,9 @@ export function HorseDetailPage() {
       if (!prev) return prev
       return {
         ...prev,
-        tags: prev.tags.map((t) => (t.category === category && t.label === label ? { ...t, note } : t)),
+        tags: prev.tags.map((t) =>
+          t.category === category && t.label === label ? { ...t, note } : t
+        ),
       }
     })
   }
@@ -143,7 +150,11 @@ export function HorseDetailPage() {
         breed: form.breed || null,
         color: form.color || null,
         imageEmoji: form.imageEmoji || null,
-        tags: form.tags.map((t) => ({ category: t.category, label: t.label, note: t.note || null })),
+        tags: form.tags.map((t) => ({
+          category: t.category,
+          label: t.label,
+          note: t.note || null,
+        })),
       })
     },
     onSuccess: () => {
@@ -215,7 +226,9 @@ export function HorseDetailPage() {
             </div>
           )}
 
-          <p className="text-foreground leading-relaxed">{horse.fullDescription ?? horse.description}</p>
+          <p className="text-foreground leading-relaxed">
+            {horse.fullDescription ?? horse.description}
+          </p>
         </>
       )}
 
@@ -234,7 +247,11 @@ export function HorseDetailPage() {
 
           <div className="grid grid-cols-2 gap-4">
             <Field label="שם">
-              <input className={inputClass} value={form.name} onChange={(e) => setField('name', e.target.value)} />
+              <input
+                className={inputClass}
+                value={form.name}
+                onChange={(e) => setField('name', e.target.value)}
+              />
             </Field>
             <Field label="גיל">
               <input
@@ -265,10 +282,18 @@ export function HorseDetailPage() {
 
           <div className="grid grid-cols-2 gap-4">
             <Field label="גזע">
-              <input className={inputClass} value={form.breed} onChange={(e) => setField('breed', e.target.value)} />
+              <input
+                className={inputClass}
+                value={form.breed}
+                onChange={(e) => setField('breed', e.target.value)}
+              />
             </Field>
             <Field label="צבע (תיאורי)">
-              <input className={inputClass} value={form.color} onChange={(e) => setField('color', e.target.value)} />
+              <input
+                className={inputClass}
+                value={form.color}
+                onChange={(e) => setField('color', e.target.value)}
+              />
             </Field>
           </div>
 
