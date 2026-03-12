@@ -1,0 +1,25 @@
+services:
+  # ── Production build served via nginx ────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    ports:
+      - '3000:80'
+    restart: unless-stopped
+
+  # ── Development server with hot-reload ───────────────────────────────────────
+  dev:
+    image: oven/bun:1.2-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - '5173:5173'
+    environment:
+      - NODE_ENV=development
+    command: sh -c "bun install && bun run dev --host"
+    profiles:
+      - dev

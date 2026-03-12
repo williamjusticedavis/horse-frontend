@@ -1,0 +1,12 @@
+{
+  // compilerOptions here are read by Bun's test runner (it doesn't follow
+  // project references). Vite and tsc use tsconfig.app.json via references.
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "files": [],
+  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
+}

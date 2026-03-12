@@ -1,0 +1,4 @@
+[test]
+# setup-dom.ts must come first — it registers browser globals on globalThis
+# before @testing-library imports evaluate screen.js (which checks for document).
+preload = ["./src/__tests__/setup-dom.ts", "./src/__tests__/setup.ts"]
