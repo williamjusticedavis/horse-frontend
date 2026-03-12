@@ -26,7 +26,7 @@ export function LoginPage() {
     mutationFn: ({ email, password }: { email: string; password: string }) =>
       login(email, password),
     onSuccess: () => {
-      toast.success('Welcome back!')
+      toast.success('ברוך השב!')
       navigate({ to: '/' })
     },
   })
@@ -35,8 +35,8 @@ export function LoginPage() {
     e.preventDefault()
 
     const next: typeof fieldErrors = {}
-    if (!form.email) next.email = 'Email is required'
-    if (!form.password) next.password = 'Password is required'
+    if (!form.email) next.email = 'נדרשת כתובת אימייל'
+    if (!form.password) next.password = 'נדרשת סיסמה'
     if (Object.keys(next).length) {
       setFieldErrors(next)
       return
@@ -48,25 +48,25 @@ export function LoginPage() {
 
   const serverError =
     mutation.error instanceof ApiError && mutation.error.status === 401
-      ? 'Invalid email or password'
+      ? 'אימייל או סיסמה שגויים'
       : mutation.error
-        ? 'Something went wrong. Please try again.'
+        ? 'משהו השתבש. נסה שנית.'
         : null
 
   return (
     <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4">
       <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle>Sign in</CardTitle>
-          <CardDescription>Enter your credentials to access your account</CardDescription>
+        <CardHeader dir="rtl">
+          <CardTitle>כניסה לחשבון</CardTitle>
+          <CardDescription>הכנס את פרטי הכניסה שלך</CardDescription>
         </CardHeader>
 
         <form onSubmit={handleSubmit} noValidate>
-          <CardContent className="flex flex-col gap-4">
+          <CardContent className="flex flex-col gap-4" dir="rtl">
             {serverError && <p className="text-destructive text-sm">{serverError}</p>}
 
             <Input
-              label="Email"
+              label="אימייל"
               type="email"
               placeholder="you@example.com"
               autoComplete="email"
@@ -76,7 +76,7 @@ export function LoginPage() {
             />
 
             <Input
-              label="Password"
+              label="סיסמה"
               type="password"
               placeholder="••••••••"
               autoComplete="current-password"
@@ -86,15 +86,15 @@ export function LoginPage() {
             />
           </CardContent>
 
-          <CardFooter className="flex flex-col gap-3">
+          <CardFooter className="flex flex-col gap-3" dir="rtl">
             <Button type="submit" className="w-full" disabled={mutation.isPending}>
-              {mutation.isPending ? 'Signing in…' : 'Sign in'}
+              {mutation.isPending ? 'מתחבר…' : 'כניסה'}
             </Button>
 
             <p className="text-muted-foreground text-center text-sm">
-              Don&apos;t have an account?{' '}
+              אין לך חשבון?{' '}
               <Link to="/register" className="text-foreground underline underline-offset-4">
-                Sign up
+                הירשם
               </Link>
             </p>
           </CardFooter>

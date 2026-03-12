@@ -10,15 +10,15 @@ export function NotFoundPage() {
       </div>
       <div>
         <h1 className="text-foreground text-7xl font-bold tracking-tight">404</h1>
-        <p className="text-foreground mt-2 text-xl font-semibold">Page not found</p>
+        <p className="text-foreground mt-2 text-xl font-semibold">הדף לא נמצא</p>
         <p className="text-muted-foreground mt-2 max-w-sm">
-          The page you&apos;re looking for doesn&apos;t exist or has been moved.
+          הדף שחיפשת אינו קיים או הועבר למקום אחר.
         </p>
       </div>
       <Button asChild>
         <Link to="/">
           <Home className="h-4 w-4" />
-          Back to home
+          חזרה לדף הבית
         </Link>
       </Button>
     </div>

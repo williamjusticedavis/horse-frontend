@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { LogOut, Moon, Sun, Zap } from 'lucide-react'
+import { LogOut, Moon, Sun } from 'lucide-react'
 import { useTheme } from '@/context/theme-context'
 import { useAuth } from '@/context/auth-context'
 import { Button } from '@/components/ui/button'
@@ -7,8 +7,9 @@ import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 
 const navLinks = [
-  { to: '/', label: 'Home' },
-  { to: '/about', label: 'About' },
+  { to: '/', label: 'סוסים' },
+  { to: '/riding-skills', label: 'כישורי רכיבה' },
+  { to: '/therapy', label: 'טיפול' },
 ] as const
 
 export function Navbar() {
@@ -19,9 +20,9 @@ export function Navbar() {
     <header className="border-border bg-background/80 sticky top-0 z-40 w-full border-b backdrop-blur-sm">
       <nav className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
         {/* Brand */}
-        <Link to="/" className="text-foreground flex items-center gap-2 font-semibold">
-          <Zap className="text-primary h-5 w-5" />
-          <span>React Template</span>
+        <Link to="/" className="text-foreground flex items-center gap-2 text-lg font-semibold">
+          <span>🐴</span>
+          <span>סוס</span>
         </Link>
 
         {/* Links */}
@@ -51,9 +52,9 @@ export function Navbar() {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => logout().then(() => toast.success('Logged out successfully'))}
-                aria-label="Sign out"
-                title="Sign out"
+                onClick={() => logout().then(() => toast.success('התנתקת בהצלחה'))}
+                aria-label="התנתק"
+                title="התנתק"
               >
                 <LogOut className="h-4 w-4" />
               </Button>
@@ -62,11 +63,11 @@ export function Navbar() {
             <>
               <Link to="/login">
                 <Button variant="ghost" size="sm">
-                  Sign in
+                  כניסה
                 </Button>
               </Link>
               <Link to="/register">
-                <Button size="sm">Sign up</Button>
+                <Button size="sm">הרשמה</Button>
               </Link>
             </>
           )}
@@ -75,7 +76,7 @@ export function Navbar() {
             variant="ghost"
             size="icon"
             onClick={toggleTheme}
-            aria-label={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
+            aria-label={`עבור למצב ${resolvedTheme === 'dark' ? 'בהיר' : 'כהה'}`}
           >
             {resolvedTheme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </Button>
