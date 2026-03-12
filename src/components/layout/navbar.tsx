@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router'
 import { LogOut, Moon, Sun } from 'lucide-react'
 import { useTheme } from '@/context/theme-context'
 import { useAuth } from '@/context/auth-context'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
@@ -48,7 +49,10 @@ export function Navbar() {
         <div className="flex items-center gap-2">
           {isAuthenticated ? (
             <>
-              <span className="text-muted-foreground hidden text-sm sm:block">{user?.email}</span>
+              <div className="hidden items-center gap-1.5 sm:flex">
+                {user?.role === 'admin' && <Badge variant="warning">מנהל</Badge>}
+                <span className="text-muted-foreground text-sm">{user?.email}</span>
+              </div>
               <Button
                 variant="ghost"
                 size="icon"
