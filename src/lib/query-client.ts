@@ -13,7 +13,7 @@ export class ApiError extends Error {
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
+      staleTime: 1000 * 60 * 60 * 5, // 5 hours
       retry: (failureCount: number, error: unknown) => {
         // Don't retry on 4xx errors (client errors)
         if (error instanceof ApiError && error.status >= 400 && error.status < 500) return false

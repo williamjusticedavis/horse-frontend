@@ -178,7 +178,7 @@ export function HorseDetailPage() {
       <div className="flex items-center justify-between">
         <button
           onClick={() => router.history.back()}
-          className="text-muted-foreground hover:text-foreground flex items-center gap-1 text-sm transition-colors"
+          className="text-muted-foreground hover:text-foreground flex cursor-pointer items-center gap-1 text-sm transition-colors"
         >
           <span>→</span>
           <span>חזרה לרשימת הסוסים</span>
