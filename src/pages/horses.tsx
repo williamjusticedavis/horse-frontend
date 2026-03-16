@@ -5,7 +5,13 @@ import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { api } from '@/lib/api'
 import { useAuth } from '@/context/auth-context'
-import { categoryVariant, categoryLabel, categoryOrder, type Horse, type TagCategory } from '@/data/horses'
+import {
+  categoryVariant,
+  categoryLabel,
+  categoryOrder,
+  type Horse,
+  type TagCategory,
+} from '@/data/horses'
 import { HorseCard } from '@/components/horse/card'
 import { CreateHorseModal } from '@/components/horse/create-horse-modal'
 import { EditTagsModal } from '@/components/horse/edit-tags-modal'
@@ -63,15 +69,14 @@ export function HorsesPage() {
     })
   }, [activeFilters, horses])
 
-  const editTagsHorse = editTagsHorseId !== null ? horses.find((h) => h.id === editTagsHorseId) : null
+  const editTagsHorse =
+    editTagsHorseId !== null ? horses.find((h) => h.id === editTagsHorseId) : null
 
   return (
     <div className="space-y-8" dir="rtl">
       <div className="flex items-center justify-between">
         <h1 className="text-foreground text-3xl font-bold">הסוסים שלנו</h1>
-        {isAdmin && (
-          <Button onClick={() => setCreateOpen(true)}>הוסף סוס +</Button>
-        )}
+        {isAdmin && <Button onClick={() => setCreateOpen(true)}>הוסף סוס +</Button>}
       </div>
 
       {isLoading && (

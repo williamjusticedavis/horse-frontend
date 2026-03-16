@@ -13,7 +13,16 @@ const inputClass =
 const textareaClass = `${inputClass} min-h-20 resize-y`
 
 function emptyForm(): EditForm {
-  return { name: '', age: '0', description: '', fullDescription: '', breed: '', color: '', imageEmoji: '', tags: [] }
+  return {
+    name: '',
+    age: '0',
+    description: '',
+    fullDescription: '',
+    breed: '',
+    color: '',
+    imageEmoji: '',
+    tags: [],
+  }
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
@@ -44,7 +53,10 @@ export function CreateHorseModal({ open, onClose }: { open: boolean; onClose: ()
     setForm((prev) => {
       const exists = prev.tags.find((t) => t.category === category && t.label === label)
       if (exists) {
-        return { ...prev, tags: prev.tags.filter((t) => !(t.category === category && t.label === label)) }
+        return {
+          ...prev,
+          tags: prev.tags.filter((t) => !(t.category === category && t.label === label)),
+        }
       }
       return { ...prev, tags: [...prev.tags, { category, label, note: '' }] }
     })
@@ -53,7 +65,9 @@ export function CreateHorseModal({ open, onClose }: { open: boolean; onClose: ()
   function setTagNote(category: TagCategory, label: string, note: string) {
     setForm((prev) => ({
       ...prev,
-      tags: prev.tags.map((t) => (t.category === category && t.label === label ? { ...t, note } : t)),
+      tags: prev.tags.map((t) =>
+        t.category === category && t.label === label ? { ...t, note } : t
+      ),
     }))
   }
 
@@ -67,7 +81,11 @@ export function CreateHorseModal({ open, onClose }: { open: boolean; onClose: ()
         breed: form.breed || null,
         color: form.color || null,
         imageEmoji: form.imageEmoji || null,
-        tags: form.tags.map((t) => ({ category: t.category, label: t.label, note: t.note || null })),
+        tags: form.tags.map((t) => ({
+          category: t.category,
+          label: t.label,
+          note: t.note || null,
+        })),
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['horses'] })
@@ -83,21 +101,32 @@ export function CreateHorseModal({ open, onClose }: { open: boolean; onClose: ()
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose()
+      }}
     >
       <div
-        className="bg-background border-border w-full max-w-lg rounded-xl border shadow-xl overflow-y-auto max-h-[90vh]"
+        className="bg-background border-border max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl border shadow-xl"
         dir="rtl"
       >
         <div className="flex items-center justify-between border-b px-6 py-4">
           <h2 className="text-foreground text-lg font-bold">הוסף סוס חדש</h2>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground cursor-pointer text-xl leading-none">×</button>
+          <button
+            onClick={onClose}
+            className="text-muted-foreground hover:text-foreground cursor-pointer text-xl leading-none"
+          >
+            ×
+          </button>
         </div>
 
         <div className="space-y-4 p-6">
           <div className="grid grid-cols-2 gap-4">
             <Field label="שם *">
-              <input className={inputClass} value={form.name} onChange={(e) => setField('name', e.target.value)} />
+              <input
+                className={inputClass}
+                value={form.name}
+                onChange={(e) => setField('name', e.target.value)}
+              />
             </Field>
             <Field label="גיל *">
               <input
@@ -111,27 +140,52 @@ export function CreateHorseModal({ open, onClose }: { open: boolean; onClose: ()
           </div>
 
           <Field label="תיאור קצר *">
-            <textarea className={textareaClass} value={form.description} onChange={(e) => setField('description', e.target.value)} />
+            <textarea
+              className={textareaClass}
+              value={form.description}
+              onChange={(e) => setField('description', e.target.value)}
+            />
           </Field>
 
           <Field label="תיאור מלא">
-            <textarea className={`${textareaClass} min-h-32`} value={form.fullDescription} onChange={(e) => setField('fullDescription', e.target.value)} />
+            <textarea
+              className={`${textareaClass} min-h-32`}
+              value={form.fullDescription}
+              onChange={(e) => setField('fullDescription', e.target.value)}
+            />
           </Field>
 
           <div className="grid grid-cols-2 gap-4">
             <Field label="גזע">
-              <input className={inputClass} value={form.breed} onChange={(e) => setField('breed', e.target.value)} />
+              <input
+                className={inputClass}
+                value={form.breed}
+                onChange={(e) => setField('breed', e.target.value)}
+              />
             </Field>
             <Field label="צבע (תיאורי)">
-              <input className={inputClass} value={form.color} onChange={(e) => setField('color', e.target.value)} />
+              <input
+                className={inputClass}
+                value={form.color}
+                onChange={(e) => setField('color', e.target.value)}
+              />
             </Field>
           </div>
 
           <Field label="אמוג׳י (גיבוי לתמונה)">
-            <input className={inputClass} value={form.imageEmoji} onChange={(e) => setField('imageEmoji', e.target.value)} />
+            <input
+              className={inputClass}
+              value={form.imageEmoji}
+              onChange={(e) => setField('imageEmoji', e.target.value)}
+            />
           </Field>
 
-          <TagEditor vocabulary={vocabulary} tags={form.tags} onToggle={toggleTag} onSetNote={setTagNote} />
+          <TagEditor
+            vocabulary={vocabulary}
+            tags={form.tags}
+            onToggle={toggleTag}
+            onSetNote={setTagNote}
+          />
 
           {mutation.error && (
             <p className="text-destructive text-sm">שגיאה: {mutation.error.message}</p>
@@ -139,7 +193,9 @@ export function CreateHorseModal({ open, onClose }: { open: boolean; onClose: ()
         </div>
 
         <div className="flex justify-end gap-2 border-t px-6 py-4">
-          <Button variant="outline" onClick={onClose} disabled={mutation.isPending}>ביטול</Button>
+          <Button variant="outline" onClick={onClose} disabled={mutation.isPending}>
+            ביטול
+          </Button>
           <Button onClick={() => mutation.mutate()} disabled={mutation.isPending}>
             {mutation.isPending ? <Spinner /> : 'צור סוס'}
           </Button>

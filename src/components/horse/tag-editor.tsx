@@ -40,7 +40,9 @@ export function TagEditor({
         return (
           <div key={cat} className="space-y-2">
             <div className="flex items-center gap-2">
-              <span className="text-muted-foreground text-xs font-medium">{categoryLabel[cat]}</span>
+              <span className="text-muted-foreground text-xs font-medium">
+                {categoryLabel[cat]}
+              </span>
             </div>
             <div className="flex flex-wrap gap-1">
               {options.map(({ label }) => {
@@ -49,7 +51,9 @@ export function TagEditor({
                   <button key={label} onClick={() => onToggle(cat, label)}>
                     <Badge
                       variant={isSelected ? categoryVariant[cat] : 'outline'}
-                      className={isSelected ? 'cursor-pointer' : 'cursor-pointer opacity-50 hover:opacity-80'}
+                      className={
+                        isSelected ? 'cursor-pointer' : 'cursor-pointer opacity-50 hover:opacity-80'
+                      }
                     >
                       {label}
                     </Badge>
@@ -59,20 +63,29 @@ export function TagEditor({
               {isAddingHere ? (
                 <input
                   autoFocus
-                  className="border-border bg-background text-foreground rounded-md border px-2 py-0.5 text-xs focus:outline-none focus:ring-1"
+                  className="border-border bg-background text-foreground rounded-md border px-2 py-0.5 text-xs focus:ring-1 focus:outline-none"
                   style={{ width: '8rem' }}
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') { e.preventDefault(); commitCustomLabel(cat) }
-                    if (e.key === 'Escape') { setAddingFor(null); setInputValue('') }
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      commitCustomLabel(cat)
+                    }
+                    if (e.key === 'Escape') {
+                      setAddingFor(null)
+                      setInputValue('')
+                    }
                   }}
                   onBlur={() => commitCustomLabel(cat)}
                   placeholder="תגית חדשה..."
                 />
               ) : (
                 <button
-                  onClick={() => { setAddingFor(cat); setInputValue('') }}
+                  onClick={() => {
+                    setAddingFor(cat)
+                    setInputValue('')
+                  }}
                   className="text-muted-foreground hover:text-foreground cursor-pointer text-xs"
                 >
                   + הוסף

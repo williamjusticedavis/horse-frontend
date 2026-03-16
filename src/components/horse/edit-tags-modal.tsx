@@ -8,7 +8,15 @@ import { type Horse, type TagCategory } from '@/data/horses'
 import { TagEditor } from '@/components/horse/tag-editor'
 import type { TagOption, EditTag } from '@/types/horse-edit'
 
-export function EditTagsModal({ horse, open, onClose }: { horse: Horse; open: boolean; onClose: () => void }) {
+export function EditTagsModal({
+  horse,
+  open,
+  onClose,
+}: {
+  horse: Horse
+  open: boolean
+  onClose: () => void
+}) {
   const queryClient = useQueryClient()
   const [tags, setTags] = useState<EditTag[]>([])
 
@@ -60,19 +68,31 @@ export function EditTagsModal({ horse, open, onClose }: { horse: Horse; open: bo
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose()
+      }}
     >
       <div
-        className="bg-background border-border w-full max-w-md rounded-xl border shadow-xl overflow-y-auto max-h-[90vh]"
+        className="bg-background border-border max-h-[90vh] w-full max-w-md overflow-y-auto rounded-xl border shadow-xl"
         dir="rtl"
       >
         <div className="flex items-center justify-between border-b px-6 py-4">
           <h2 className="text-foreground text-lg font-bold">עריכת תגיות — {horse.name}</h2>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground cursor-pointer text-xl leading-none">×</button>
+          <button
+            onClick={onClose}
+            className="text-muted-foreground hover:text-foreground cursor-pointer text-xl leading-none"
+          >
+            ×
+          </button>
         </div>
 
         <div className="p-6">
-          <TagEditor vocabulary={vocabulary} tags={tags} onToggle={toggleTag} onSetNote={setTagNote} />
+          <TagEditor
+            vocabulary={vocabulary}
+            tags={tags}
+            onToggle={toggleTag}
+            onSetNote={setTagNote}
+          />
 
           {mutation.error && (
             <p className="text-destructive mt-4 text-sm">שגיאה: {mutation.error.message}</p>
@@ -80,7 +100,9 @@ export function EditTagsModal({ horse, open, onClose }: { horse: Horse; open: bo
         </div>
 
         <div className="flex justify-end gap-2 border-t px-6 py-4">
-          <Button variant="outline" onClick={onClose} disabled={mutation.isPending}>ביטול</Button>
+          <Button variant="outline" onClick={onClose} disabled={mutation.isPending}>
+            ביטול
+          </Button>
           <Button onClick={() => mutation.mutate()} disabled={mutation.isPending}>
             {mutation.isPending ? <Spinner /> : 'שמור תגיות'}
           </Button>

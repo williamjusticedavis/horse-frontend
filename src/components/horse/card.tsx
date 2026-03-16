@@ -29,7 +29,11 @@ export function HorseCard({ horse, onEditTags }: { horse: Horse; onEditTags?: ()
           </div>
           {onEditTags && (
             <button
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); onEditTags() }}
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                onEditTags()
+              }}
               className="text-muted-foreground hover:text-foreground cursor-pointer text-xs"
             >
               ✏️ תגיות

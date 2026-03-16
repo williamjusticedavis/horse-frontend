@@ -1,6 +1,14 @@
 import type { BadgeVariant } from '@/components/ui/badge'
 
-export type TagCategory = 'age' | 'temperament' | 'level' | 'purpose' | 'gender' | 'size' | 'color' | 'seniority'
+export type TagCategory =
+  | 'age'
+  | 'temperament'
+  | 'level'
+  | 'purpose'
+  | 'gender'
+  | 'size'
+  | 'color'
+  | 'seniority'
 
 export interface HorseTag {
   id: number

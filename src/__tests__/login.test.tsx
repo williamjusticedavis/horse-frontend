@@ -58,7 +58,9 @@ describe('LoginPage', () => {
   })
 
   test('shows 401 error as friendly Hebrew message', async () => {
-    const loginFn = mock(async () => { throw new ApiError(401, 'Unauthorized') })
+    const loginFn = mock(async () => {
+      throw new ApiError(401, 'Unauthorized')
+    })
     await renderLogin(loginFn)
     await userEvent.type(screen.getByLabelText('אימייל'), 'user@example.com')
     await userEvent.type(screen.getByLabelText('סיסמה'), 'wrongpassword')
@@ -69,7 +71,9 @@ describe('LoginPage', () => {
   })
 
   test('shows generic error for non-401 server errors', async () => {
-    const loginFn = mock(async () => { throw new ApiError(500, 'Internal Server Error') })
+    const loginFn = mock(async () => {
+      throw new ApiError(500, 'Internal Server Error')
+    })
     await renderLogin(loginFn)
     await userEvent.type(screen.getByLabelText('אימייל'), 'user@example.com')
     await userEvent.type(screen.getByLabelText('סיסמה'), 'password123')

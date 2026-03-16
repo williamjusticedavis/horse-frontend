@@ -68,7 +68,9 @@ describe('api', () => {
     setAccessToken('my-test-token')
     await api.get('/test')
     const [, options] = fetchMock.mock.calls[0] as [string, RequestInit]
-    expect((options.headers as Record<string, string>)['Authorization']).toBe('Bearer my-test-token')
+    expect((options.headers as Record<string, string>)['Authorization']).toBe(
+      'Bearer my-test-token'
+    )
   })
 
   test('does NOT inject Authorization header when no token', async () => {
