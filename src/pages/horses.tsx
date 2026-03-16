@@ -4,8 +4,11 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { api } from '@/lib/api'
+import { useAuth } from '@/context/auth-context'
 import { categoryVariant, categoryLabel, categoryOrder, type Horse, type TagCategory } from '@/data/horses'
 import { HorseCard } from '@/components/horse/card'
+import { CreateHorseModal } from '@/components/horse/create-horse-modal'
+import { EditTagsModal } from '@/components/horse/edit-tags-modal'
 
 function buildFilterOptions(horses: Horse[]) {
   const map = new Map<TagCategory, Set<string>>()
@@ -19,7 +22,12 @@ function buildFilterOptions(horses: Horse[]) {
 }
 
 export function HorsesPage() {
+  const { user } = useAuth()
+  const isAdmin = user?.role === 'admin'
+
   const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set())
+  const [createOpen, setCreateOpen] = useState(false)
+  const [editTagsHorseId, setEditTagsHorseId] = useState<number | null>(null)
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['horses'],
@@ -55,10 +63,15 @@ export function HorsesPage() {
     })
   }, [activeFilters, horses])
 
+  const editTagsHorse = editTagsHorseId !== null ? horses.find((h) => h.id === editTagsHorseId) : null
+
   return (
     <div className="space-y-8" dir="rtl">
-      <div className="text-center">
+      <div className="flex items-center justify-between">
         <h1 className="text-foreground text-3xl font-bold">הסוסים שלנו</h1>
+        {isAdmin && (
+          <Button onClick={() => setCreateOpen(true)}>הוסף סוס +</Button>
+        )}
       </div>
 
       {isLoading && (
@@ -118,7 +131,11 @@ export function HorsesPage() {
           {/* Grid */}
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {filteredHorses.map((horse) => (
-              <HorseCard key={horse.id} horse={horse} />
+              <HorseCard
+                key={horse.id}
+                horse={horse}
+                onEditTags={isAdmin ? () => setEditTagsHorseId(horse.id) : undefined}
+              />
             ))}
           </div>
 
@@ -126,6 +143,16 @@ export function HorsesPage() {
             <p className="text-muted-foreground text-center">לא נמצאו סוסים התואמים את הסינון</p>
           )}
         </>
+      )}
+
+      <CreateHorseModal open={createOpen} onClose={() => setCreateOpen(false)} />
+
+      {editTagsHorse && (
+        <EditTagsModal
+          horse={editTagsHorse}
+          open={editTagsHorseId !== null}
+          onClose={() => setEditTagsHorseId(null)}
+        />
       )}
     </div>
   )

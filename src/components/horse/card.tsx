@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { categoryVariant, categoryOrder, type Horse } from '@/data/horses'
 
-export function HorseCard({ horse }: { horse: Horse }) {
+export function HorseCard({ horse, onEditTags }: { horse: Horse; onEditTags?: () => void }) {
   return (
     <Link key={horse.id} to="/horse/$id" params={{ id: String(horse.id) }} className="block">
       <Card className="h-full overflow-hidden transition-shadow hover:shadow-md">
@@ -27,6 +27,14 @@ export function HorseCard({ horse }: { horse: Horse }) {
                 ))
             )}
           </div>
+          {onEditTags && (
+            <button
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); onEditTags() }}
+              className="text-muted-foreground hover:text-foreground cursor-pointer text-xs"
+            >
+              ✏️ תגיות
+            </button>
+          )}
         </CardContent>
       </Card>
     </Link>

@@ -67,7 +67,7 @@ export function HorseDetailPage() {
   useBlocker({
     shouldBlockFn: () => {
       if (!isDirty) return false
-      return window.confirm('יש שינויים שלא נשמרו. לצאת בכל זאת?')
+      return !window.confirm('יש שינויים שלא נשמרו. לצאת בכל זאת?')
     },
   })
 
