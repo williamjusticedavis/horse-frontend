@@ -26,7 +26,7 @@ export function RegisterPage() {
     mutationFn: ({ email, password }: { email: string; password: string }) =>
       register(email, password),
     onSuccess: () => {
-      toast.success('Account created!')
+      toast.success('החשבון נוצר בהצלחה!')
       navigate({ to: '/' })
     },
   })
@@ -35,9 +35,9 @@ export function RegisterPage() {
     e.preventDefault()
 
     const next: typeof fieldErrors = {}
-    if (!form.email) next.email = 'Email is required'
-    if (!form.password) next.password = 'Password is required'
-    else if (form.password.length < 8) next.password = 'Password must be at least 8 characters'
+    if (!form.email) next.email = 'נדרשת כתובת אימייל'
+    if (!form.password) next.password = 'נדרשת סיסמה'
+    else if (form.password.length < 8) next.password = 'הסיסמה חייבת להכיל לפחות 8 תווים'
     if (Object.keys(next).length) {
       setFieldErrors(next)
       return
@@ -50,28 +50,28 @@ export function RegisterPage() {
   const emailError =
     fieldErrors.email ??
     (mutation.error instanceof ApiError && mutation.error.status === 409
-      ? 'An account with this email already exists'
+      ? 'כבר קיים חשבון עם כתובת אימייל זו'
       : undefined)
 
   const serverError =
     mutation.error && !(mutation.error instanceof ApiError && mutation.error.status === 409)
-      ? 'Something went wrong. Please try again.'
+      ? 'משהו השתבש. נסה שנית.'
       : null
 
   return (
     <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4">
       <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle>Create account</CardTitle>
-          <CardDescription>Sign up to get started</CardDescription>
+        <CardHeader dir="rtl">
+          <CardTitle>יצירת חשבון</CardTitle>
+          <CardDescription>הירשם כדי להתחיל</CardDescription>
         </CardHeader>
 
         <form onSubmit={handleSubmit} noValidate>
-          <CardContent className="flex flex-col gap-4">
+          <CardContent className="flex flex-col gap-4" dir="rtl">
             {serverError && <p className="text-destructive text-sm">{serverError}</p>}
 
             <Input
-              label="Email"
+              label="אימייל"
               type="email"
               placeholder="you@example.com"
               autoComplete="email"
@@ -81,26 +81,26 @@ export function RegisterPage() {
             />
 
             <Input
-              label="Password"
+              label="סיסמה"
               type="password"
               placeholder="••••••••"
               autoComplete="new-password"
-              hint="Must be at least 8 characters"
+              hint="לפחות 8 תווים"
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
               error={fieldErrors.password}
             />
           </CardContent>
 
-          <CardFooter className="flex flex-col gap-3">
+          <CardFooter className="flex flex-col gap-3" dir="rtl">
             <Button type="submit" className="w-full" disabled={mutation.isPending}>
-              {mutation.isPending ? 'Creating account…' : 'Create account'}
+              {mutation.isPending ? 'יוצר חשבון…' : 'יצירת חשבון'}
             </Button>
 
             <p className="text-muted-foreground text-center text-sm">
-              Already have an account?{' '}
+              כבר יש לך חשבון?{' '}
               <Link to="/login" className="text-foreground underline underline-offset-4">
-                Sign in
+                כניסה
               </Link>
             </p>
           </CardFooter>
