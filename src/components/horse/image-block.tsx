@@ -15,7 +15,13 @@ export function HorseImage({
   previewUrl?: string | null
 }) {
   const fileRef = useRef<HTMLInputElement>(null)
-  const displayUrl = previewUrl ?? (horse.imageUrl ? `${config.apiUrl}${horse.imageUrl}` : null)
+  const displayUrl =
+    previewUrl ??
+    (horse.imageUrl
+      ? horse.imageUrl.startsWith('http')
+        ? horse.imageUrl
+        : `${config.apiUrl}${horse.imageUrl}`
+      : null)
 
   return (
     <div>
