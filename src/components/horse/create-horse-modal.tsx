@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -7,6 +7,7 @@ import { api } from '@/lib/api'
 import { type Horse, type TagCategory } from '@/data/horses'
 import { TagEditor } from '@/components/horse/tag-editor'
 import type { TagOption, EditForm } from '@/types/horse-edit'
+import { HorseFormSchema, type HorseFormErrors } from '@/lib/horse-schema'
 
 const inputClass =
   'border-border bg-background text-foreground w-full rounded-md border px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-offset-1'
@@ -36,6 +37,8 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 export function CreateHorseModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const queryClient = useQueryClient()
   const [form, setForm] = useState<EditForm>(emptyForm)
+  const [errors, setErrors] = useState<HorseFormErrors>({})
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   const { data: vocabData } = useQuery({
     queryKey: ['tag-vocabulary'],
@@ -90,9 +93,32 @@ export function CreateHorseModal({ open, onClose }: { open: boolean; onClose: ()
       queryClient.invalidateQueries({ queryKey: ['tag-vocabulary'] })
       toast.success('הסוס נוצר בהצלחה')
       setForm(emptyForm())
+      setErrors({})
       onClose()
     },
   })
+
+  function handleSubmit() {
+    const result = HorseFormSchema.safeParse({ ...form, age: form.age })
+    if (!result.success) {
+      const fieldErrors: HorseFormErrors = {}
+      for (const issue of result.error.issues) {
+        const key = issue.path[0] as keyof HorseFormErrors
+        if (!fieldErrors[key]) fieldErrors[key] = issue.message
+      }
+      setErrors(fieldErrors)
+      toast.error('יש למלא את כל שדות החובה')
+      requestAnimationFrame(() => {
+        scrollRef.current?.querySelector('[data-field-error]')?.scrollIntoView({
+          block: 'center',
+          behavior: 'smooth',
+        })
+      })
+      return
+    }
+    setErrors({})
+    mutation.mutate()
+  }
 
   if (!open) return null
 
@@ -104,6 +130,7 @@ export function CreateHorseModal({ open, onClose }: { open: boolean; onClose: ()
       }}
     >
       <div
+        ref={scrollRef}
         className="bg-background border-border max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl border shadow-xl"
         dir="rtl"
       >
@@ -125,6 +152,7 @@ export function CreateHorseModal({ open, onClose }: { open: boolean; onClose: ()
                 value={form.name}
                 onChange={(e) => setField('name', e.target.value)}
               />
+              {errors.name && <p data-field-error className="text-destructive text-xs mt-0.5">{errors.name}</p>}
             </Field>
             <Field label="גיל *">
               <input
@@ -134,6 +162,7 @@ export function CreateHorseModal({ open, onClose }: { open: boolean; onClose: ()
                 value={form.age}
                 onChange={(e) => setField('age', e.target.value)}
               />
+              {errors.age && <p data-field-error className="text-destructive text-xs mt-0.5">{errors.age}</p>}
             </Field>
           </div>
 
@@ -143,6 +172,9 @@ export function CreateHorseModal({ open, onClose }: { open: boolean; onClose: ()
               value={form.description}
               onChange={(e) => setField('description', e.target.value)}
             />
+            {errors.description && (
+              <p data-field-error className="text-destructive text-xs mt-0.5">{errors.description}</p>
+            )}
           </Field>
 
           <Field label="תיאור מלא">
@@ -180,13 +212,14 @@ export function CreateHorseModal({ open, onClose }: { open: boolean; onClose: ()
           {mutation.error && (
             <p className="text-destructive text-sm">שגיאה: {mutation.error.message}</p>
           )}
+
         </div>
 
         <div className="flex justify-end gap-2 border-t px-6 py-4">
           <Button variant="outline" onClick={onClose} disabled={mutation.isPending}>
             ביטול
           </Button>
-          <Button onClick={() => mutation.mutate()} disabled={mutation.isPending}>
+          <Button onClick={handleSubmit} disabled={mutation.isPending}>
             {mutation.isPending ? <Spinner /> : 'צור סוס'}
           </Button>
         </div>

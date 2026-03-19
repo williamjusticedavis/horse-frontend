@@ -13,6 +13,7 @@ import { HorseImage } from '@/components/horse/image-block'
 import { TagDisplay } from '@/components/horse/tag-display'
 import { TagEditor } from '@/components/horse/tag-editor'
 import type { TagOption, EditForm } from '@/types/horse-edit'
+import { HorseFormSchema, type HorseFormErrors } from '@/lib/horse-schema'
 import { Route } from '@/routes/horse.$id'
 
 function horseToForm(horse: Horse): EditForm {
@@ -59,6 +60,7 @@ export function HorseDetailPage() {
 
   const [isEditing, setIsEditing] = useState(false)
   const [form, setForm] = useState<EditForm | null>(null)
+  const [errors, setErrors] = useState<HorseFormErrors>({})
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const isDirty = isEditing && form !== null
@@ -91,6 +93,7 @@ export function HorseDetailPage() {
     if (isDirty && !window.confirm('יש שינויים שלא נשמרו. לבטל?')) return
     setIsEditing(false)
     setForm(null)
+    setErrors({})
     setImageFile(null)
     setImagePreview(null)
   }
@@ -160,11 +163,35 @@ export function HorseDetailPage() {
       queryClient.invalidateQueries({ queryKey: ['horses'] })
       setIsEditing(false)
       setForm(null)
+      setErrors({})
       setImageFile(null)
       setImagePreview(null)
       toast.success('הסוס עודכן בהצלחה')
     },
   })
+
+  function handleSave() {
+    if (!form) return
+    const result = HorseFormSchema.safeParse({ ...form })
+    if (!result.success) {
+      const fieldErrors: HorseFormErrors = {}
+      for (const issue of result.error.issues) {
+        const key = issue.path[0] as keyof HorseFormErrors
+        if (!fieldErrors[key]) fieldErrors[key] = issue.message
+      }
+      setErrors(fieldErrors)
+      toast.error('יש למלא את כל שדות החובה')
+      requestAnimationFrame(() => {
+        document.querySelector('[data-field-error]')?.scrollIntoView({
+          block: 'center',
+          behavior: 'smooth',
+        })
+      })
+      return
+    }
+    setErrors({})
+    saveMutation.mutate()
+  }
 
   const inputClass =
     'border-border bg-background text-foreground w-full rounded-md border px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-offset-1'
@@ -246,14 +273,15 @@ export function HorseDetailPage() {
           />
 
           <div className="grid grid-cols-2 gap-4">
-            <Field label="שם">
+            <Field label="שם *">
               <input
                 className={inputClass}
                 value={form.name}
                 onChange={(e) => setField('name', e.target.value)}
               />
+              {errors.name && <p data-field-error className="text-destructive text-xs mt-0.5">{errors.name}</p>}
             </Field>
-            <Field label="גיל">
+            <Field label="גיל *">
               <input
                 className={inputClass}
                 type="number"
@@ -261,15 +289,19 @@ export function HorseDetailPage() {
                 value={form.age}
                 onChange={(e) => setField('age', e.target.value)}
               />
+              {errors.age && <p data-field-error className="text-destructive text-xs mt-0.5">{errors.age}</p>}
             </Field>
           </div>
 
-          <Field label="תיאור קצר">
+          <Field label="תיאור קצר *">
             <textarea
               className={textareaClass}
               value={form.description}
               onChange={(e) => setField('description', e.target.value)}
             />
+            {errors.description && (
+              <p data-field-error className="text-destructive text-xs mt-0.5">{errors.description}</p>
+            )}
           </Field>
 
           <Field label="תיאור מלא">
@@ -312,7 +344,7 @@ export function HorseDetailPage() {
             <Button variant="outline" onClick={cancelEdit} disabled={saveMutation.isPending}>
               ביטול
             </Button>
-            <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending}>
+            <Button onClick={handleSave} disabled={saveMutation.isPending}>
               {saveMutation.isPending ? <Spinner /> : 'שמור שינויים'}
             </Button>
           </div>
