@@ -124,9 +124,13 @@ export function CreateHorseModal({ open, onClose }: { open: boolean; onClose: ()
 
   return (
     <div
+      role="presentation"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose()
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') onClose()
       }}
     >
       <div
