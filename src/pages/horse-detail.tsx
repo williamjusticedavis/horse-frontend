@@ -23,7 +23,6 @@ function horseToForm(horse: Horse): EditForm {
     fullDescription: horse.fullDescription ?? '',
     breed: horse.breed ?? '',
     color: horse.color ?? '',
-    imageEmoji: horse.imageEmoji ?? '',
     tags: horse.tags.map((t) => ({ category: t.category, label: t.label, note: t.note ?? '' })),
   }
 }
@@ -149,7 +148,6 @@ export function HorseDetailPage() {
         fullDescription: form.fullDescription || null,
         breed: form.breed || null,
         color: form.color || null,
-        imageEmoji: form.imageEmoji || null,
         tags: form.tags.map((t) => ({
           category: t.category,
           label: t.label,
@@ -226,9 +224,11 @@ export function HorseDetailPage() {
             </div>
           )}
 
-          <p className="text-foreground leading-relaxed">
-            {horse.fullDescription ?? horse.description}
-          </p>
+          <p className="text-muted-foreground">{horse.description}</p>
+
+          {horse.fullDescription && (
+            <p className="text-foreground leading-relaxed">{horse.fullDescription}</p>
+          )}
         </>
       )}
 
@@ -296,14 +296,6 @@ export function HorseDetailPage() {
               />
             </Field>
           </div>
-
-          <Field label="אמוג׳י (גיבוי לתמונה)">
-            <input
-              className={inputClass}
-              value={form.imageEmoji}
-              onChange={(e) => setField('imageEmoji', e.target.value)}
-            />
-          </Field>
 
           <TagEditor
             vocabulary={vocabulary}

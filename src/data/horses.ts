@@ -25,7 +25,6 @@ export interface Horse {
   fullDescription: string | null
   breed: string | null
   color: string | null
-  imageEmoji: string | null
   imageUrl: string | null
   tags: HorseTag[]
 }

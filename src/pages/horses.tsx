@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
@@ -34,6 +35,22 @@ export function HorsesPage() {
   const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set())
   const [createOpen, setCreateOpen] = useState(false)
   const [editTagsHorseId, setEditTagsHorseId] = useState<number | null>(null)
+
+  const queryClient = useQueryClient()
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => api.delete(`/api/horses/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['horses'] })
+      toast.success('הסוס נמחק')
+    },
+    onError: () => toast.error('שגיאה במחיקת הסוס'),
+  })
+
+  function handleDelete(id: number) {
+    if (!confirm('האם למחוק את הסוס לצמיתות?')) return
+    deleteMutation.mutate(id)
+  }
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['horses'],
@@ -140,6 +157,7 @@ export function HorsesPage() {
                 key={horse.id}
                 horse={horse}
                 onEditTags={isAdmin ? () => setEditTagsHorseId(horse.id) : undefined}
+                onDelete={isAdmin ? () => handleDelete(horse.id) : undefined}
               />
             ))}
           </div>

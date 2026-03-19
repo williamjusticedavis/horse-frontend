@@ -94,6 +94,13 @@ export function TagEditor({
             </div>
             {selected.map((tag) => (
               <div key={tag.label} className="flex items-center gap-2 pr-1">
+                <button
+                  onClick={() => onToggle(cat, tag.label)}
+                  className="text-muted-foreground hover:text-destructive shrink-0 cursor-pointer text-xs leading-none"
+                  title="הסר תגית"
+                >
+                  ✕
+                </button>
                 <Badge variant={categoryVariant[cat]} className="shrink-0">
                   {tag.label}
                 </Badge>

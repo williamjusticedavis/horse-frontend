@@ -18,6 +18,5 @@ export interface EditForm {
   fullDescription: string
   breed: string
   color: string
-  imageEmoji: string
   tags: EditTag[]
 }

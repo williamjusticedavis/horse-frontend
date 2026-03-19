@@ -20,7 +20,6 @@ function emptyForm(): EditForm {
     fullDescription: '',
     breed: '',
     color: '',
-    imageEmoji: '',
     tags: [],
   }
 }
@@ -80,7 +79,6 @@ export function CreateHorseModal({ open, onClose }: { open: boolean; onClose: ()
         fullDescription: form.fullDescription || null,
         breed: form.breed || null,
         color: form.color || null,
-        imageEmoji: form.imageEmoji || null,
         tags: form.tags.map((t) => ({
           category: t.category,
           label: t.label,
@@ -171,14 +169,6 @@ export function CreateHorseModal({ open, onClose }: { open: boolean; onClose: ()
               />
             </Field>
           </div>
-
-          <Field label="אמוג׳י (גיבוי לתמונה)">
-            <input
-              className={inputClass}
-              value={form.imageEmoji}
-              onChange={(e) => setField('imageEmoji', e.target.value)}
-            />
-          </Field>
 
           <TagEditor
             vocabulary={vocabulary}

@@ -12,7 +12,6 @@ const baseHorse: Horse = {
   fullDescription: null,
   breed: 'Mustang',
   color: null,
-  imageEmoji: '🐴',
   imageUrl: null,
   tags: [
     { id: 1, category: 'gender', label: 'זכר', note: null },
@@ -38,11 +37,6 @@ describe('HorseCard', () => {
 
   test('renders the emoji when no imageUrl', async () => {
     await renderWithProviders(() => <HorseCard horse={baseHorse} />)
-    expect(screen.getByText('🐴')).toBeInTheDocument()
-  })
-
-  test('falls back to default emoji when imageEmoji is null', async () => {
-    await renderWithProviders(() => <HorseCard horse={{ ...baseHorse, imageEmoji: null }} />)
     expect(screen.getByText('🐴')).toBeInTheDocument()
   })
 

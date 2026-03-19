@@ -29,7 +29,10 @@ export function HorseImage({
         {displayUrl ? (
           <img src={displayUrl} alt={horse.name} className="h-full w-full object-cover" />
         ) : (
-          <span className="text-8xl">{horse.imageEmoji ?? '🐴'}</span>
+          <div className="flex flex-col items-center gap-2">
+            <span className="text-8xl">🐴</span>
+            <span className="text-foreground text-lg font-semibold">{horse.name}</span>
+          </div>
         )}
       </div>
       {editMode && (
