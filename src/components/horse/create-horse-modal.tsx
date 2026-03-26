@@ -156,7 +156,11 @@ export function CreateHorseModal({ open, onClose }: { open: boolean; onClose: ()
                 value={form.name}
                 onChange={(e) => setField('name', e.target.value)}
               />
-              {errors.name && <p data-field-error className="text-destructive text-xs mt-0.5">{errors.name}</p>}
+              {errors.name && (
+                <p data-field-error className="text-destructive mt-0.5 text-xs">
+                  {errors.name}
+                </p>
+              )}
             </Field>
             <Field label="גיל *">
               <input
@@ -166,7 +170,11 @@ export function CreateHorseModal({ open, onClose }: { open: boolean; onClose: ()
                 value={form.age}
                 onChange={(e) => setField('age', e.target.value)}
               />
-              {errors.age && <p data-field-error className="text-destructive text-xs mt-0.5">{errors.age}</p>}
+              {errors.age && (
+                <p data-field-error className="text-destructive mt-0.5 text-xs">
+                  {errors.age}
+                </p>
+              )}
             </Field>
           </div>
 
@@ -177,7 +185,9 @@ export function CreateHorseModal({ open, onClose }: { open: boolean; onClose: ()
               onChange={(e) => setField('description', e.target.value)}
             />
             {errors.description && (
-              <p data-field-error className="text-destructive text-xs mt-0.5">{errors.description}</p>
+              <p data-field-error className="text-destructive mt-0.5 text-xs">
+                {errors.description}
+              </p>
             )}
           </Field>
 
@@ -216,7 +226,6 @@ export function CreateHorseModal({ open, onClose }: { open: boolean; onClose: ()
           {mutation.error && (
             <p className="text-destructive text-sm">שגיאה: {mutation.error.message}</p>
           )}
-
         </div>
 
         <div className="flex justify-end gap-2 border-t px-6 py-4">

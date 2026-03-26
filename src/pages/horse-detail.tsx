@@ -279,7 +279,11 @@ export function HorseDetailPage() {
                 value={form.name}
                 onChange={(e) => setField('name', e.target.value)}
               />
-              {errors.name && <p data-field-error className="text-destructive text-xs mt-0.5">{errors.name}</p>}
+              {errors.name && (
+                <p data-field-error className="text-destructive mt-0.5 text-xs">
+                  {errors.name}
+                </p>
+              )}
             </Field>
             <Field label="גיל *">
               <input
@@ -289,7 +293,11 @@ export function HorseDetailPage() {
                 value={form.age}
                 onChange={(e) => setField('age', e.target.value)}
               />
-              {errors.age && <p data-field-error className="text-destructive text-xs mt-0.5">{errors.age}</p>}
+              {errors.age && (
+                <p data-field-error className="text-destructive mt-0.5 text-xs">
+                  {errors.age}
+                </p>
+              )}
             </Field>
           </div>
 
@@ -300,7 +308,9 @@ export function HorseDetailPage() {
               onChange={(e) => setField('description', e.target.value)}
             />
             {errors.description && (
-              <p data-field-error className="text-destructive text-xs mt-0.5">{errors.description}</p>
+              <p data-field-error className="text-destructive mt-0.5 text-xs">
+                {errors.description}
+              </p>
             )}
           </Field>
 
