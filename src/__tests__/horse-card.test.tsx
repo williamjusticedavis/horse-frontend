@@ -1,5 +1,5 @@
-import { describe, test, expect } from 'bun:test'
-import { screen } from '@testing-library/react'
+import { describe, test, expect, mock } from 'bun:test'
+import { screen, fireEvent } from '@testing-library/react'
 import { HorseCard } from '../components/horse/card'
 import { renderWithProviders } from './test-utils'
 import type { Horse } from '../data/horses'
@@ -22,7 +22,7 @@ const baseHorse: Horse = {
 describe('HorseCard', () => {
   test('renders the horse name', async () => {
     await renderWithProviders(() => <HorseCard horse={baseHorse} />)
-    expect(screen.getByText('Spirit')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Spirit' })).toBeInTheDocument()
   })
 
   test('renders the horse age', async () => {
@@ -55,6 +55,20 @@ describe('HorseCard', () => {
 
   test('renders a horse with no tags without crashing', async () => {
     await renderWithProviders(() => <HorseCard horse={{ ...baseHorse, tags: [] }} />)
-    expect(screen.getByText('Spirit')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Spirit' })).toBeInTheDocument()
+  })
+
+  test('calls onEditTags when edit button is clicked', async () => {
+    const onEditTags = mock(() => {})
+    await renderWithProviders(() => <HorseCard horse={baseHorse} onEditTags={onEditTags} />)
+    fireEvent.click(screen.getByRole('button', { name: /תגיות/ }))
+    expect(onEditTags).toHaveBeenCalledTimes(1)
+  })
+
+  test('calls onDelete when delete button is clicked', async () => {
+    const onDelete = mock(() => {})
+    await renderWithProviders(() => <HorseCard horse={baseHorse} onDelete={onDelete} />)
+    fireEvent.click(screen.getByRole('button', { name: /מחק/ }))
+    expect(onDelete).toHaveBeenCalledTimes(1)
   })
 })

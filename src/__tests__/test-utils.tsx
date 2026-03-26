@@ -6,7 +6,7 @@
  * calling render() so the component is fully mounted in the DOM on return.
  */
 import { type ReactNode } from 'react'
-import { render, type RenderResult } from '@testing-library/react'
+import { render, act, type RenderResult } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import {
   createRootRoute,
@@ -70,11 +70,15 @@ export async function renderWithProviders(
 
   const authValue = makeMockAuth(authOverrides)
 
-  return render(
-    <QueryClientProvider client={queryClient}>
-      <AuthContext.Provider value={authValue}>
-        <RouterProvider router={router} />
-      </AuthContext.Provider>
-    </QueryClientProvider>
-  )
+  let result!: RenderResult
+  await act(async () => {
+    result = render(
+      <QueryClientProvider client={queryClient}>
+        <AuthContext.Provider value={authValue}>
+          <RouterProvider router={router} />
+        </AuthContext.Provider>
+      </QueryClientProvider>
+    )
+  })
+  return result
 }
