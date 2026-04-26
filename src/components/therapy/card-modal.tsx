@@ -167,7 +167,7 @@ export function CardModal({
                 {addingTag ? (
                   <input
                     autoFocus
-                    className="border-border bg-background text-foreground rounded-md border px-2 py-0.5 text-xs focus:outline-none focus:ring-1"
+                    className="border-border bg-background text-foreground rounded-md border px-2 py-0.5 text-xs focus:ring-1 focus:outline-none"
                     style={{ width: '8rem' }}
                     value={tagInput}
                     onChange={(e) => setTagInput(e.target.value)}

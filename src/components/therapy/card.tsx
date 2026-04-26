@@ -43,13 +43,13 @@ export function TherapyCardItem({
         {isExpanded && (
           <div className="mt-4 space-y-3 border-t pt-4">
             <div>
-              <p className="text-muted-foreground mb-1 text-xs font-semibold uppercase tracking-wide">
+              <p className="text-muted-foreground mb-1 text-xs font-semibold tracking-wide uppercase">
                 🔧 בפועל
               </p>
               <p className="text-foreground text-sm">{card.inPractice}</p>
             </div>
             <div>
-              <p className="text-muted-foreground mb-1 text-xs font-semibold uppercase tracking-wide">
+              <p className="text-muted-foreground mb-1 text-xs font-semibold tracking-wide uppercase">
                 ⚠️ התאמות חשובות
               </p>
               <p className="text-foreground text-sm">{card.contraindications}</p>

@@ -14,7 +14,12 @@ import { Route as RidingSkillsRouteImport } from './routes/riding-skills'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RidingSkillsIndexRouteImport } from './routes/riding-skills.index'
+import { Route as RidingSkillsNewRouteImport } from './routes/riding-skills.new'
+import { Route as RidingSkillsIdRouteImport } from './routes/riding-skills.$id'
 import { Route as HorseIdRouteImport } from './routes/horse.$id'
+import { Route as RidingSkillsIdIndexRouteImport } from './routes/riding-skills.$id.index'
+import { Route as RidingSkillsIdEditRouteImport } from './routes/riding-skills.$id.edit'
 
 const TherapyRoute = TherapyRouteImport.update({
   id: '/therapy',
@@ -41,36 +46,74 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RidingSkillsIndexRoute = RidingSkillsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => RidingSkillsRoute,
+} as any)
+const RidingSkillsNewRoute = RidingSkillsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => RidingSkillsRoute,
+} as any)
+const RidingSkillsIdRoute = RidingSkillsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => RidingSkillsRoute,
+} as any)
 const HorseIdRoute = HorseIdRouteImport.update({
   id: '/horse/$id',
   path: '/horse/$id',
   getParentRoute: () => rootRouteImport,
+} as any)
+const RidingSkillsIdIndexRoute = RidingSkillsIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => RidingSkillsIdRoute,
+} as any)
+const RidingSkillsIdEditRoute = RidingSkillsIdEditRouteImport.update({
+  id: '/edit',
+  path: '/edit',
+  getParentRoute: () => RidingSkillsIdRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/riding-skills': typeof RidingSkillsRoute
+  '/riding-skills': typeof RidingSkillsRouteWithChildren
   '/therapy': typeof TherapyRoute
   '/horse/$id': typeof HorseIdRoute
+  '/riding-skills/$id': typeof RidingSkillsIdRouteWithChildren
+  '/riding-skills/new': typeof RidingSkillsNewRoute
+  '/riding-skills/': typeof RidingSkillsIndexRoute
+  '/riding-skills/$id/edit': typeof RidingSkillsIdEditRoute
+  '/riding-skills/$id/': typeof RidingSkillsIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/riding-skills': typeof RidingSkillsRoute
   '/therapy': typeof TherapyRoute
   '/horse/$id': typeof HorseIdRoute
+  '/riding-skills/new': typeof RidingSkillsNewRoute
+  '/riding-skills': typeof RidingSkillsIndexRoute
+  '/riding-skills/$id/edit': typeof RidingSkillsIdEditRoute
+  '/riding-skills/$id': typeof RidingSkillsIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/riding-skills': typeof RidingSkillsRoute
+  '/riding-skills': typeof RidingSkillsRouteWithChildren
   '/therapy': typeof TherapyRoute
   '/horse/$id': typeof HorseIdRoute
+  '/riding-skills/$id': typeof RidingSkillsIdRouteWithChildren
+  '/riding-skills/new': typeof RidingSkillsNewRoute
+  '/riding-skills/': typeof RidingSkillsIndexRoute
+  '/riding-skills/$id/edit': typeof RidingSkillsIdEditRoute
+  '/riding-skills/$id/': typeof RidingSkillsIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,14 +124,22 @@ export interface FileRouteTypes {
     | '/riding-skills'
     | '/therapy'
     | '/horse/$id'
+    | '/riding-skills/$id'
+    | '/riding-skills/new'
+    | '/riding-skills/'
+    | '/riding-skills/$id/edit'
+    | '/riding-skills/$id/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/register'
-    | '/riding-skills'
     | '/therapy'
     | '/horse/$id'
+    | '/riding-skills/new'
+    | '/riding-skills'
+    | '/riding-skills/$id/edit'
+    | '/riding-skills/$id'
   id:
     | '__root__'
     | '/'
@@ -97,13 +148,18 @@ export interface FileRouteTypes {
     | '/riding-skills'
     | '/therapy'
     | '/horse/$id'
+    | '/riding-skills/$id'
+    | '/riding-skills/new'
+    | '/riding-skills/'
+    | '/riding-skills/$id/edit'
+    | '/riding-skills/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
-  RidingSkillsRoute: typeof RidingSkillsRoute
+  RidingSkillsRoute: typeof RidingSkillsRouteWithChildren
   TherapyRoute: typeof TherapyRoute
   HorseIdRoute: typeof HorseIdRoute
 }
@@ -145,6 +201,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/riding-skills/': {
+      id: '/riding-skills/'
+      path: '/'
+      fullPath: '/riding-skills/'
+      preLoaderRoute: typeof RidingSkillsIndexRouteImport
+      parentRoute: typeof RidingSkillsRoute
+    }
+    '/riding-skills/new': {
+      id: '/riding-skills/new'
+      path: '/new'
+      fullPath: '/riding-skills/new'
+      preLoaderRoute: typeof RidingSkillsNewRouteImport
+      parentRoute: typeof RidingSkillsRoute
+    }
+    '/riding-skills/$id': {
+      id: '/riding-skills/$id'
+      path: '/$id'
+      fullPath: '/riding-skills/$id'
+      preLoaderRoute: typeof RidingSkillsIdRouteImport
+      parentRoute: typeof RidingSkillsRoute
+    }
     '/horse/$id': {
       id: '/horse/$id'
       path: '/horse/$id'
@@ -152,14 +229,58 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HorseIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/riding-skills/$id/': {
+      id: '/riding-skills/$id/'
+      path: '/'
+      fullPath: '/riding-skills/$id/'
+      preLoaderRoute: typeof RidingSkillsIdIndexRouteImport
+      parentRoute: typeof RidingSkillsIdRoute
+    }
+    '/riding-skills/$id/edit': {
+      id: '/riding-skills/$id/edit'
+      path: '/edit'
+      fullPath: '/riding-skills/$id/edit'
+      preLoaderRoute: typeof RidingSkillsIdEditRouteImport
+      parentRoute: typeof RidingSkillsIdRoute
+    }
   }
 }
+
+interface RidingSkillsIdRouteChildren {
+  RidingSkillsIdEditRoute: typeof RidingSkillsIdEditRoute
+  RidingSkillsIdIndexRoute: typeof RidingSkillsIdIndexRoute
+}
+
+const RidingSkillsIdRouteChildren: RidingSkillsIdRouteChildren = {
+  RidingSkillsIdEditRoute: RidingSkillsIdEditRoute,
+  RidingSkillsIdIndexRoute: RidingSkillsIdIndexRoute,
+}
+
+const RidingSkillsIdRouteWithChildren = RidingSkillsIdRoute._addFileChildren(
+  RidingSkillsIdRouteChildren,
+)
+
+interface RidingSkillsRouteChildren {
+  RidingSkillsIdRoute: typeof RidingSkillsIdRouteWithChildren
+  RidingSkillsNewRoute: typeof RidingSkillsNewRoute
+  RidingSkillsIndexRoute: typeof RidingSkillsIndexRoute
+}
+
+const RidingSkillsRouteChildren: RidingSkillsRouteChildren = {
+  RidingSkillsIdRoute: RidingSkillsIdRouteWithChildren,
+  RidingSkillsNewRoute: RidingSkillsNewRoute,
+  RidingSkillsIndexRoute: RidingSkillsIndexRoute,
+}
+
+const RidingSkillsRouteWithChildren = RidingSkillsRoute._addFileChildren(
+  RidingSkillsRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
-  RidingSkillsRoute: RidingSkillsRoute,
+  RidingSkillsRoute: RidingSkillsRouteWithChildren,
   TherapyRoute: TherapyRoute,
   HorseIdRoute: HorseIdRoute,
 }
