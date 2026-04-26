@@ -17,7 +17,7 @@ export function HorseCard({
       <Card className="h-full overflow-hidden transition-shadow hover:shadow-md">
         <div className="bg-muted flex h-48 items-center justify-center">
           {horse.imageUrl ? (
-            <img src={horse.imageUrl} alt={horse.name} className="h-full w-full object-cover" />
+            <img src={horse.imageUrl} alt={horse.name} className="h-full w-full object-contain" />
           ) : (
             <div className="flex flex-col items-center gap-1">
               <span className="text-5xl">🐴</span>

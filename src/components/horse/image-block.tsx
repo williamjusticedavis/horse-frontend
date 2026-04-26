@@ -27,7 +27,7 @@ export function HorseImage({
     <div>
       <div className="bg-muted flex h-64 items-center justify-center overflow-hidden rounded-xl">
         {displayUrl ? (
-          <img src={displayUrl} alt={horse.name} className="h-full w-full object-cover" />
+          <img src={displayUrl} alt={horse.name} className="h-full w-full object-contain" />
         ) : (
           <div className="flex flex-col items-center gap-2">
             <span className="text-8xl">🐴</span>
