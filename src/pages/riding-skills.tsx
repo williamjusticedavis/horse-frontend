@@ -5,10 +5,14 @@ import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { api } from '@/lib/api'
+import { useAuth } from '@/context/auth-context'
 import { SkillCard } from '@/components/skills/skill-card'
 import { CATEGORIES, type Skill, type Category } from '@/data/skills'
 
 export function RidingSkillsPage() {
+  const { user } = useAuth()
+  const isAdmin = user?.role === 'admin'
+
   const { data, isLoading, isError } = useQuery({
     queryKey: ['skills'],
     queryFn: () => api.get<{ skills: Skill[] }>('/api/skills'),
@@ -52,15 +56,20 @@ export function RidingSkillsPage() {
             מדריך עזר למדריכים לבניית תכניות רכיבה לתלמידים
           </p>
         </div>
-        <Button asChild>
-          <Link to="/riding-skills/new">
-            <Plus className="h-4 w-4" />
-            הוסף כישור
-          </Link>
-        </Button>
+        {isAdmin && (
+          <Button asChild>
+            <Link to="/riding-skills/new">
+              <Plus className="h-4 w-4" />
+              הוסף כישור
+            </Link>
+          </Button>
+        )}
       </div>
 
       {/* Categories */}
+      {skills.length === 0 ? (
+        <p className="text-muted-foreground py-12 text-center">אין כישורים עדיין</p>
+      ) : (
       <div className="space-y-10">
         {CATEGORIES.map((category) => {
           const categorySkills = byCategory.get(category) ?? []
@@ -79,6 +88,7 @@ export function RidingSkillsPage() {
           )
         })}
       </div>
+      )}
     </div>
   )
 }

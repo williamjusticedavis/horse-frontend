@@ -161,7 +161,7 @@ export function SkillFormPage({ skillId }: SkillFormPageProps) {
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Name */}
         <div className="space-y-1">
-          <label className="text-foreground text-sm font-medium">שם הכישור (אנגלית)</label>
+          <label className="text-foreground text-sm font-medium">שם הכישור</label>
           <input
             type="text"
             value={form.name}
