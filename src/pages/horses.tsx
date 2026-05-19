@@ -30,7 +30,7 @@ function buildFilterOptions(horses: Horse[]) {
 
 export function HorsesPage() {
   const { user } = useAuth()
-  const isAdmin = user?.role === 'admin'
+  const isAdmin = user?.role === 'admin' || user?.role === 'super_admin'
 
   const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set())
   const [createOpen, setCreateOpen] = useState(false)

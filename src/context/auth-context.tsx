@@ -7,7 +7,7 @@ const REFRESH_TOKEN_KEY = 'refresh_token'
 interface User {
   id: string
   email: string
-  role: 'admin' | 'user'
+  role: 'super_admin' | 'admin' | 'user'
 }
 
 interface AuthResponse {

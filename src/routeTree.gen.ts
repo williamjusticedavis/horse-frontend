@@ -13,6 +13,7 @@ import { Route as TherapyRouteImport } from './routes/therapy'
 import { Route as RidingSkillsRouteImport } from './routes/riding-skills'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RidingSkillsIndexRouteImport } from './routes/riding-skills.index'
 import { Route as RidingSkillsNewRouteImport } from './routes/riding-skills.new'
@@ -39,6 +40,11 @@ const RegisterRoute = RegisterRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -79,6 +85,7 @@ const RidingSkillsIdEditRoute = RidingSkillsIdEditRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/riding-skills': typeof RidingSkillsRouteWithChildren
@@ -92,6 +99,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/therapy': typeof TherapyRoute
@@ -104,6 +112,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/riding-skills': typeof RidingSkillsRouteWithChildren
@@ -119,6 +128,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/login'
     | '/register'
     | '/riding-skills'
@@ -132,6 +142,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/login'
     | '/register'
     | '/therapy'
@@ -143,6 +154,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/login'
     | '/register'
     | '/riding-skills'
@@ -157,6 +169,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   RidingSkillsRoute: typeof RidingSkillsRouteWithChildren
@@ -192,6 +205,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -278,6 +298,7 @@ const RidingSkillsRouteWithChildren = RidingSkillsRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   RidingSkillsRoute: RidingSkillsRouteWithChildren,

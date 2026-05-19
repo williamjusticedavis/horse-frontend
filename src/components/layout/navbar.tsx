@@ -43,6 +43,20 @@ export function Navbar() {
               </Link>
             </li>
           ))}
+          {user?.role === 'super_admin' && (
+            <li>
+              <Link
+                to="/admin"
+                className={cn(
+                  'text-muted-foreground hover:text-foreground rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
+                  '[&.active]:bg-accent [&.active]:text-accent-foreground'
+                )}
+                activeProps={{ className: 'active' }}
+              >
+                פאנל ניהול
+              </Link>
+            </li>
+          )}
         </ul>
 
         {/* Right side: auth + theme toggle */}
@@ -50,6 +64,7 @@ export function Navbar() {
           {isAuthenticated ? (
             <>
               <div className="hidden items-center gap-1.5 sm:flex">
+                {user?.role === 'super_admin' && <Badge variant="destructive">סופר מנהל</Badge>}
                 {user?.role === 'admin' && <Badge variant="warning">מנהל</Badge>}
                 <span className="text-muted-foreground text-sm">{user?.email}</span>
               </div>

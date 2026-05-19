@@ -25,7 +25,7 @@ export function SkillDetailPage() {
   const { level } = Route.useSearch()
   const navigate = useNavigate()
   const { user } = useAuth()
-  const isAdmin = user?.role === 'admin'
+  const isAdmin = user?.role === 'admin' || user?.role === 'super_admin'
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['skills', id],
