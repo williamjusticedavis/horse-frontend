@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
+import { SlidersHorizontal, X } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
@@ -8,18 +9,15 @@ import { api } from '@/lib/api'
 import { useAuth } from '@/context/auth-context'
 import { TherapyCardItem } from '@/components/therapy/card'
 import { TherapyDetailModal } from '@/components/therapy/detail-modal'
+import { TherapyFilterModal } from '@/components/therapy/filter-modal'
 import { CardModal } from '@/components/therapy/card-modal'
 import {
-  DOMAINS,
   TAG_VOCABULARY,
   domainBadgeVariant,
   type Domain,
   type TherapyCard,
   type CardFormData,
 } from '@/data/therapy'
-
-/** Tags shown before the "עוד n" toggle */
-const TAGS_COLLAPSED = 8
 
 export function TherapyPage() {
   const { user } = useAuth()
@@ -29,7 +27,7 @@ export function TherapyPage() {
   const [activeDomains, setActiveDomains] = useState<Set<Domain>>(new Set())
   const [activeTags, setActiveTags] = useState<Set<string>>(new Set())
   const [detailCard, setDetailCard] = useState<TherapyCard | null>(null)
-  const [showAllTags, setShowAllTags] = useState(false)
+  const [filterModalOpen, setFilterModalOpen] = useState(false)
   const [showCreate, setShowCreate] = useState(false)
   const [editingCard, setEditingCard] = useState<TherapyCard | null>(null)
 
@@ -47,8 +45,6 @@ export function TherapyPage() {
     const custom = [...tagSet].filter((t) => !(TAG_VOCABULARY as readonly string[]).includes(t))
     return [...vocabFirst, ...custom]
   }, [cards])
-
-  const visibleTags = showAllTags ? availableTags : availableTags.slice(0, TAGS_COLLAPSED)
 
   const filteredCards = useMemo(() => {
     return cards.filter((c) => {
@@ -127,59 +123,45 @@ export function TherapyPage() {
         {isAdmin && <Button onClick={() => setShowCreate(true)}>+ כרטיסיה חדשה</Button>}
       </div>
 
-      {/* Filter bar */}
-      <div className="border-border space-y-3 rounded-xl border p-4">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-muted-foreground w-12 text-xs font-bold">תחום</span>
-          {DOMAINS.map((d) => (
-            <button key={d} onClick={() => toggleDomain(d)} className="cursor-pointer">
-              <Badge
-                variant={activeDomains.has(d) ? domainBadgeVariant[d] : 'outline'}
-                className={activeDomains.has(d) ? 'opacity-100' : 'opacity-60 hover:opacity-100'}
-              >
-                {d}
-              </Badge>
-            </button>
-          ))}
-        </div>
-        {availableTags.length > 0 && (
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-muted-foreground w-12 text-xs font-bold">תגיות</span>
-            {visibleTags.map((tag) => (
-              <button key={tag} onClick={() => toggleTag(tag)} className="cursor-pointer">
-                <Badge
-                  variant={activeTags.has(tag) ? 'teal' : 'outline'}
-                  className={activeTags.has(tag) ? 'opacity-100' : 'opacity-60 hover:opacity-100'}
-                >
-                  #{tag}
-                </Badge>
-              </button>
-            ))}
-            {availableTags.length > TAGS_COLLAPSED && (
-              <button
-                onClick={() => setShowAllTags((prev) => !prev)}
-                className="text-muted-foreground hover:text-foreground cursor-pointer text-xs underline"
-              >
-                {showAllTags ? 'פחות' : `עוד ${availableTags.length - TAGS_COLLAPSED}`}
-              </button>
-            )}
-          </div>
-        )}
+      {/* Filter bar — a single trigger opens the full picker (see filter-modal.tsx)
+          instead of dumping domain + tag rows straight onto the page. */}
+      <div className="flex flex-wrap items-center gap-2">
+        <Button variant="outline" onClick={() => setFilterModalOpen(true)}>
+          <SlidersHorizontal className="h-4 w-4" />
+          סינון
+          {(activeDomains.size > 0 || activeTags.size > 0) && (
+            <Badge variant="default" className="ms-1">
+              {activeDomains.size + activeTags.size}
+            </Badge>
+          )}
+        </Button>
+        {[...activeDomains].map((d) => (
+          <button key={d} onClick={() => toggleDomain(d)} className="cursor-pointer">
+            <Badge variant={domainBadgeVariant[d]} className="gap-1 pe-1.5">
+              {d}
+              <X className="h-3 w-3" />
+            </Badge>
+          </button>
+        ))}
+        {[...activeTags].map((tag) => (
+          <button key={tag} onClick={() => toggleTag(tag)} className="cursor-pointer">
+            <Badge variant="teal" className="gap-1 pe-1.5">
+              #{tag}
+              <X className="h-3 w-3" />
+            </Badge>
+          </button>
+        ))}
         {(activeDomains.size > 0 || activeTags.size > 0) && (
-          <div className="flex items-center gap-3 pt-1">
-            <span className="text-muted-foreground text-xs">
-              מציג {filteredCards.length} מתוך {cards.length} כרטיסיות
-            </span>
-            <button
-              onClick={() => {
-                setActiveDomains(new Set())
-                setActiveTags(new Set())
-              }}
-              className="text-muted-foreground hover:text-foreground cursor-pointer text-xs underline"
-            >
-              נקה הכל
-            </button>
-          </div>
+          <Button
+            variant="link"
+            size="sm"
+            onClick={() => {
+              setActiveDomains(new Set())
+              setActiveTags(new Set())
+            }}
+          >
+            נקה הכל
+          </Button>
         )}
       </div>
 
@@ -225,6 +207,19 @@ export function TherapyPage() {
       </section>
 
       {/* Modals */}
+      <TherapyFilterModal
+        open={filterModalOpen}
+        onClose={() => setFilterModalOpen(false)}
+        availableTags={availableTags}
+        activeDomains={activeDomains}
+        activeTags={activeTags}
+        onToggleDomain={toggleDomain}
+        onToggleTag={toggleTag}
+        onClear={() => {
+          setActiveDomains(new Set())
+          setActiveTags(new Set())
+        }}
+      />
       <TherapyDetailModal
         card={detailCard}
         onClose={() => setDetailCard(null)}
