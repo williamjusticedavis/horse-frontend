@@ -57,6 +57,13 @@ export const levelTabActive: Record<Level, string> = {
   advanced: 'bg-rose-500/15 text-rose-700 border border-rose-500/30 dark:text-rose-400',
 }
 
+/** Small solid dots used on skill cards to hint at the available levels */
+export const levelDot: Record<Level, string> = {
+  beginner: 'bg-emerald-500',
+  intermediate: 'bg-amber-500',
+  advanced: 'bg-rose-500',
+}
+
 export const levelTabInactive =
   'bg-transparent text-muted-foreground border border-transparent hover:bg-accent hover:text-accent-foreground'
 

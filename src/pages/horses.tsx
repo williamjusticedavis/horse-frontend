@@ -1,19 +1,15 @@
 import { useMemo, useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
+import { SlidersHorizontal, X } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { api } from '@/lib/api'
 import { useAuth } from '@/context/auth-context'
-import {
-  categoryVariant,
-  categoryLabel,
-  categoryOrder,
-  type Horse,
-  type TagCategory,
-} from '@/data/horses'
+import { categoryVariant, type Horse, type TagCategory } from '@/data/horses'
 import { HorseCard } from '@/components/horse/card'
+import { HorseFilterModal } from '@/components/horse/filter-modal'
 import { CreateHorseModal } from '@/components/horse/create-horse-modal'
 import { EditTagsModal } from '@/components/horse/edit-tags-modal'
 
@@ -33,6 +29,7 @@ export function HorsesPage() {
   const isAdmin = user?.role === 'admin' || user?.role === 'super_admin'
 
   const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set())
+  const [filterModalOpen, setFilterModalOpen] = useState(false)
   const [createOpen, setCreateOpen] = useState(false)
   const [editTagsHorseId, setEditTagsHorseId] = useState<number | null>(null)
 
@@ -108,41 +105,35 @@ export function HorsesPage() {
 
       {!isLoading && !isError && (
         <>
-          {/* Filter bar */}
-          <div className="space-y-3">
-            <div className="flex flex-wrap gap-4">
-              {categoryOrder.map((cat) => {
-                const labels = filterOptions.get(cat)
-                if (!labels) return null
-                return (
-                  <div key={cat} className="flex items-center gap-2">
-                    <span className="text-muted-foreground text-xs font-bold">
-                      {categoryLabel[cat]}:
-                    </span>
-                    <div className="flex flex-wrap gap-1">
-                      {[...labels].map((label) => {
-                        const key = `${cat}:${label}`
-                        const active = activeFilters.has(key)
-                        return (
-                          <button
-                            key={key}
-                            onClick={() => toggleFilter(key)}
-                            className="cursor-pointer"
-                          >
-                            <Badge
-                              variant={active ? categoryVariant[cat] : 'outline'}
-                              className={active ? 'opacity-100' : 'opacity-60 hover:opacity-100'}
-                            >
-                              {label}
-                            </Badge>
-                          </button>
-                        )
-                      })}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
+          {/* Filter bar — a single trigger opens the full picker (see filter-modal.tsx)
+              instead of dumping every category's options straight onto the page, which
+              wrapped into an unreadable block on mobile. */}
+          <div className="flex flex-wrap items-center gap-2">
+            <Button variant="outline" onClick={() => setFilterModalOpen(true)}>
+              <SlidersHorizontal className="h-4 w-4" />
+              סינון
+              {activeFilters.size > 0 && (
+                <Badge variant="default" className="ms-1">
+                  {activeFilters.size}
+                </Badge>
+              )}
+            </Button>
+            {[...activeFilters].map((key) => {
+              const [cat, label] = key.split(':') as [TagCategory, string]
+              return (
+                <button
+                  key={key}
+                  onClick={() => toggleFilter(key)}
+                  className="cursor-pointer"
+                  aria-label={`הסר סינון ${label}`}
+                >
+                  <Badge variant={categoryVariant[cat]} className="gap-1 pe-1.5">
+                    {label}
+                    <X className="h-3 w-3" />
+                  </Badge>
+                </button>
+              )
+            })}
             {activeFilters.size > 0 && (
               <Button variant="link" size="sm" onClick={() => setActiveFilters(new Set())}>
                 נקה הכל
@@ -167,6 +158,15 @@ export function HorsesPage() {
           )}
         </>
       )}
+
+      <HorseFilterModal
+        open={filterModalOpen}
+        onClose={() => setFilterModalOpen(false)}
+        filterOptions={filterOptions}
+        activeFilters={activeFilters}
+        onToggle={toggleFilter}
+        onClear={() => setActiveFilters(new Set())}
+      />
 
       <CreateHorseModal open={createOpen} onClose={() => setCreateOpen(false)} />
 

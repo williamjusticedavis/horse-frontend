@@ -7,6 +7,7 @@ import { Spinner } from '@/components/ui/spinner'
 import { api } from '@/lib/api'
 import { useAuth } from '@/context/auth-context'
 import { TherapyCardItem } from '@/components/therapy/card'
+import { TherapyDetailModal } from '@/components/therapy/detail-modal'
 import { CardModal } from '@/components/therapy/card-modal'
 import {
   DOMAINS,
@@ -17,6 +18,9 @@ import {
   type CardFormData,
 } from '@/data/therapy'
 
+/** Tags shown before the "עוד n" toggle */
+const TAGS_COLLAPSED = 8
+
 export function TherapyPage() {
   const { user } = useAuth()
   const isAdmin = user?.role === 'admin' || user?.role === 'super_admin'
@@ -24,7 +28,8 @@ export function TherapyPage() {
 
   const [activeDomains, setActiveDomains] = useState<Set<Domain>>(new Set())
   const [activeTags, setActiveTags] = useState<Set<string>>(new Set())
-  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [detailCard, setDetailCard] = useState<TherapyCard | null>(null)
+  const [showAllTags, setShowAllTags] = useState(false)
   const [showCreate, setShowCreate] = useState(false)
   const [editingCard, setEditingCard] = useState<TherapyCard | null>(null)
 
@@ -42,6 +47,8 @@ export function TherapyPage() {
     const custom = [...tagSet].filter((t) => !(TAG_VOCABULARY as readonly string[]).includes(t))
     return [...vocabFirst, ...custom]
   }, [cards])
+
+  const visibleTags = showAllTags ? availableTags : availableTags.slice(0, TAGS_COLLAPSED)
 
   const filteredCards = useMemo(() => {
     return cards.filter((c) => {
@@ -109,11 +116,8 @@ export function TherapyPage() {
 
   function handleDelete(card: TherapyCard) {
     if (!confirm(`למחוק את "${card.title}"?`)) return
+    setDetailCard(null)
     deleteMutation.mutate(card.id)
-  }
-
-  function toggleExpand(id: string) {
-    setExpandedId((prev) => (prev === id ? null : id))
   }
 
   return (
@@ -124,9 +128,9 @@ export function TherapyPage() {
       </div>
 
       {/* Filter bar */}
-      <div className="space-y-3">
+      <div className="border-border space-y-3 rounded-xl border p-4">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-muted-foreground text-xs font-bold">תחום:</span>
+          <span className="text-muted-foreground w-12 text-xs font-bold">תחום</span>
           {DOMAINS.map((d) => (
             <button key={d} onClick={() => toggleDomain(d)} className="cursor-pointer">
               <Badge
@@ -140,8 +144,8 @@ export function TherapyPage() {
         </div>
         {availableTags.length > 0 && (
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-muted-foreground text-xs font-bold">תגיות:</span>
-            {availableTags.map((tag) => (
+            <span className="text-muted-foreground w-12 text-xs font-bold">תגיות</span>
+            {visibleTags.map((tag) => (
               <button key={tag} onClick={() => toggleTag(tag)} className="cursor-pointer">
                 <Badge
                   variant={activeTags.has(tag) ? 'teal' : 'outline'}
@@ -151,19 +155,31 @@ export function TherapyPage() {
                 </Badge>
               </button>
             ))}
+            {availableTags.length > TAGS_COLLAPSED && (
+              <button
+                onClick={() => setShowAllTags((prev) => !prev)}
+                className="text-muted-foreground hover:text-foreground cursor-pointer text-xs underline"
+              >
+                {showAllTags ? 'פחות' : `עוד ${availableTags.length - TAGS_COLLAPSED}`}
+              </button>
+            )}
           </div>
         )}
         {(activeDomains.size > 0 || activeTags.size > 0) && (
-          <Button
-            variant="link"
-            size="sm"
-            onClick={() => {
-              setActiveDomains(new Set())
-              setActiveTags(new Set())
-            }}
-          >
-            נקה הכל
-          </Button>
+          <div className="flex items-center gap-3 pt-1">
+            <span className="text-muted-foreground text-xs">
+              מציג {filteredCards.length} מתוך {cards.length} כרטיסיות
+            </span>
+            <button
+              onClick={() => {
+                setActiveDomains(new Set())
+                setActiveTags(new Set())
+              }}
+              className="text-muted-foreground hover:text-foreground cursor-pointer text-xs underline"
+            >
+              נקה הכל
+            </button>
+          </div>
         )}
       </div>
 
@@ -183,17 +199,16 @@ export function TherapyPage() {
               {cards.length === 0 ? 'אין כרטיסיות עדיין' : 'לא נמצאו כרטיסיות לסינון זה'}
             </p>
           ) : (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            // flex-wrap (not grid) so a partial last row centers instead of
+            // leaving a hole on one side
+            <div className="flex flex-wrap justify-center gap-5">
               {filteredCards.map((card) => (
-                <TherapyCardItem
+                <div
                   key={card.id}
-                  card={card}
-                  isExpanded={expandedId === card.id}
-                  onToggle={() => toggleExpand(card.id)}
-                  isAdmin={isAdmin}
-                  onEdit={() => setEditingCard(card)}
-                  onDelete={() => handleDelete(card)}
-                />
+                  className="w-full sm:w-[calc(50%-0.625rem)] lg:w-[calc(33.333%-0.834rem)]"
+                >
+                  <TherapyCardItem card={card} onOpen={() => setDetailCard(card)} />
+                </div>
               ))}
             </div>
           )}
@@ -210,6 +225,17 @@ export function TherapyPage() {
       </section>
 
       {/* Modals */}
+      <TherapyDetailModal
+        card={detailCard}
+        onClose={() => setDetailCard(null)}
+        isAdmin={isAdmin}
+        onEdit={() => {
+          const card = detailCard
+          setDetailCard(null)
+          setEditingCard(card)
+        }}
+        onDelete={() => detailCard && handleDelete(detailCard)}
+      />
       <CardModal
         open={showCreate}
         onClose={() => setShowCreate(false)}

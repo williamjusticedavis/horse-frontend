@@ -47,7 +47,7 @@ export function RidingSkillsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8" dir="rtl">
+    <div dir="rtl">
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <div>
@@ -70,24 +70,34 @@ export function RidingSkillsPage() {
       {skills.length === 0 ? (
         <p className="text-muted-foreground py-12 text-center">אין כישורים עדיין</p>
       ) : (
-      <div className="space-y-10">
-        {CATEGORIES.map((category) => {
-          const categorySkills = byCategory.get(category) ?? []
-          if (categorySkills.length === 0) return null
-          return (
-            <section key={category}>
-              <h2 className="text-foreground mb-4 border-b pb-2 text-xl font-semibold">
-                {category}
-              </h2>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {categorySkills.map((skill) => (
-                  <SkillCard key={skill.id} skill={skill} />
-                ))}
-              </div>
-            </section>
-          )
-        })}
-      </div>
+        <div className="space-y-10">
+          {CATEGORIES.map((category) => {
+            const categorySkills = byCategory.get(category) ?? []
+            if (categorySkills.length === 0) return null
+            return (
+              <section key={category}>
+                <h2 className="text-foreground mb-4 flex items-baseline gap-2 border-b pb-2 text-xl font-semibold">
+                  {category}
+                  <span className="text-muted-foreground text-sm font-normal">
+                    {categorySkills.length}
+                  </span>
+                </h2>
+                {/* flex-wrap (not grid) so a partial last row centers instead of
+                  leaving a hole on one side */}
+                <div className="flex flex-wrap justify-center gap-5">
+                  {categorySkills.map((skill) => (
+                    <div
+                      key={skill.id}
+                      className="w-full sm:w-[calc(50%-0.625rem)] lg:w-[calc(33.333%-0.834rem)]"
+                    >
+                      <SkillCard skill={skill} />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )
+          })}
+        </div>
       )}
     </div>
   )
