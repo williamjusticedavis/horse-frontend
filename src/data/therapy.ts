@@ -15,17 +15,10 @@ export interface TherapyCard {
 
 export const DOMAINS: Domain[] = ['רגשי', 'תקשורתי', 'מוטורי', 'חברתי', 'התנהגותי']
 
-export const TAG_VOCABULARY = [
-  'ויסות',
-  'מודעות',
-  'חיזוק',
-  'ביטחון',
-  'חברתי',
-  'תקשורתי',
-  'רגשי',
-  'מוטורי',
-  'התנהגותי',
-] as const
+// Domain names deliberately excluded here — they're already their own filter
+// row (DOMAINS above); repeating them as tags doubled the filter list with a
+// redundant dimension that wasn't even applied consistently per card.
+export const TAG_VOCABULARY = ['ויסות', 'מודעות', 'חיזוק', 'ביטחון'] as const
 
 export const domainBorder: Record<Domain, string> = {
   רגשי: 'border-t-blue-400',
